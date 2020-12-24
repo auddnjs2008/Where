@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 
 const {kakao} =window;
-const Map =({position})=>{
+const Map =({position,setMap})=>{
   
 const [marker,setMarker] =useState(null);
 const [controller,setControll]=useState(new kakao.maps.ZoomControl());
@@ -27,9 +27,9 @@ const [controller,setControll]=useState(new kakao.maps.ZoomControl());
         position: new kakao.maps.LatLng(position[0], position[1])
     }))
     // 컨트롤러 생성
-    map.addControl(controller,kakao.maps.ControlPosition.TOPRIGHT); 
-
-
+    map.addControl(controller,kakao.maps.ControlPosition.TOPRIGHT);
+    setMap(map);
+    
  },[position]);
 
 
