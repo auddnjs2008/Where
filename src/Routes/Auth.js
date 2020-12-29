@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { authService, firebaseInstant } from "../firebase";
+import KaKaoLogin from "react-kakao-login";
+import KakaoLogin from "react-kakao-login";
 
-
+const {Kakao}=window;
 
 const Form = styled.form``;
 
@@ -49,17 +51,33 @@ const Auth =() =>{
         try{
         if(name === "google"){
             provider = new firebaseInstant.auth.GoogleAuthProvider();
-
         }else if(name==="github"){
              provider =new firebaseInstant.auth.GithubAuthProvider();
         }
-
-        const data = await authService.signInWithPopup(provider);
+            
+        await authService.signInWithPopup(provider);    
         }catch(error){
             setError(error);
         }
     }
     
+    // const kakaoLogin = ()=>{
+     
+    //     Kakao.Auth.login({
+    //         success: (auth) => 
+    //         fail:(error) => console.log(error)
+    //     })
+    // }
+
+    const responseKakao = (res) =>{
+        localStorage.setItem("kakao",JSON.stringify(res));
+        Kakao.Auth.setAccessToken(res.response.access_token);
+        Kakao.API.request({
+            url:'/v1/api/talk/friends',
+            success: (response) => console.log(response),
+            fail: (error) => console.log(error)
+        })
+    }
 
 
     const toggleBtnClick =() => setNewUser(prev => !prev);
@@ -75,6 +93,12 @@ const Auth =() =>{
             <SocialLogin>
                 <button onClick={socialLoginClick} name={"google"}>Google Login</button>
                 <button onClick={socialLoginClick} name={"github"}>GitHub Login</button>
+                <KakaoLogin 
+                    jsKey="e2a2fd82f5c318edfb424144be286f47"
+                    onSuccess={(result) => responseKakao(result)}
+                    onFailure={error => console.log(error)}
+                    getProfile={true} 
+                ></KakaoLogin>
             </SocialLogin>
         </>
     )

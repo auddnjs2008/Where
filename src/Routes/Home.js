@@ -158,7 +158,7 @@ const Home =({userObj}) =>{
     useEffect(()=>{
         const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png';
         const listes = document.querySelectorAll(".list");
-        const testBound = new kakao.maps.LatLngBounds()
+        const testBound = new kakao.maps.LatLngBounds();
         //전 마커들을 지워준다. 
         for(let i=0; i<markers.length; i++){
             markers[i].setMap(null);
