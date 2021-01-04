@@ -5,6 +5,7 @@ import Map from "../Components/map";
 import { storeService } from "../firebase";
 import { queryAllByAttribute } from "@testing-library/react";
 import Navigator from "../Components/Navigator";
+import Roadview from "../Components/roadview";
 
 const { kakao, Kakao } = window;
 
@@ -13,7 +14,138 @@ const SearchWrapper = styled.div`
 `;
 
 const SearchSubWrapper = styled.div``;
-const ButtonWrapper = styled.div``;
+
+const MapWrapper = styled.div`
+  display: flex;
+  position: relative;
+  .map_wrap {
+    overflow: hidden;
+    height: 330px;
+  }
+  /* 지도위에 로드뷰의 위치와 각도를 표시하기 위한 map walker 아이콘의 스타일 */
+  .MapWalker {
+    position: absolute;
+    margin: -26px 0 0 -51px;
+  }
+  .MapWalker .figure {
+    position: absolute;
+    width: 25px;
+    left: 38px;
+    top: -2px;
+    height: 39px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png) -298px -114px
+      no-repeat;
+  }
+  .MapWalker .angleBack {
+    width: 102px;
+    height: 52px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png) -834px -2px
+      no-repeat;
+  }
+  .MapWalker.m0 .figure {
+    background-position: -298px -114px;
+  }
+  .MapWalker.m1 .figure {
+    background-position: -335px -114px;
+  }
+  .MapWalker.m2 .figure {
+    background-position: -372px -114px;
+  }
+  .MapWalker.m3 .figure {
+    background-position: -409px -114px;
+  }
+  .MapWalker.m4 .figure {
+    background-position: -446px -114px;
+  }
+  .MapWalker.m5 .figure {
+    background-position: -483px -114px;
+  }
+  .MapWalker.m6 .figure {
+    background-position: -520px -114px;
+  }
+  .MapWalker.m7 .figure {
+    background-position: -557px -114px;
+  }
+  .MapWalker.m8 .figure {
+    background-position: -2px -114px;
+  }
+  .MapWalker.m9 .figure {
+    background-position: -39px -114px;
+  }
+  .MapWalker.m10 .figure {
+    background-position: -76px -114px;
+  }
+  .MapWalker.m11 .figure {
+    background-position: -113px -114px;
+  }
+  .MapWalker.m12 .figure {
+    background-position: -150px -114px;
+  }
+  .MapWalker.m13 .figure {
+    background-position: -187px -114px;
+  }
+  .MapWalker.m14 .figure {
+    background-position: -224px -114px;
+  }
+  .MapWalker.m15 .figure {
+    background-position: -261px -114px;
+  }
+  .MapWalker.m0 .angleBack {
+    background-position: -834px -2px;
+  }
+  .MapWalker.m1 .angleBack {
+    background-position: -938px -2px;
+  }
+  .MapWalker.m2 .angleBack {
+    background-position: -1042px -2px;
+  }
+  .MapWalker.m3 .angleBack {
+    background-position: -1146px -2px;
+  }
+  .MapWalker.m4 .angleBack {
+    background-position: -1250px -2px;
+  }
+  .MapWalker.m5 .angleBack {
+    background-position: -1354px -2px;
+  }
+  .MapWalker.m6 .angleBack {
+    background-position: -1458px -2px;
+  }
+  .MapWalker.m7 .angleBack {
+    background-position: -1562px -2px;
+  }
+  .MapWalker.m8 .angleBack {
+    background-position: -2px -2px;
+  }
+  .MapWalker.m9 .angleBack {
+    background-position: -106px -2px;
+  }
+  .MapWalker.m10 .angleBack {
+    background-position: -210px -2px;
+  }
+  .MapWalker.m11 .angleBack {
+    background-position: -314px -2px;
+  }
+  .MapWalker.m12 .angleBack {
+    background-position: -418px -2px;
+  }
+  .MapWalker.m13 .angleBack {
+    background-position: -522px -2px;
+  }
+  .MapWalker.m14 .angleBack {
+    background-position: -626px -2px;
+  }
+  .MapWalker.m15 .angleBack {
+    background-position: -730px -2px;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+`;
 
 const SearchForm = styled.form``;
 
@@ -35,9 +167,11 @@ const Home = ({ userObj }) => {
   const [place, setPlace] = useState([]);
   const [markers, setMarker] = useState([]); // 마커들을 검색하고 저장해둔 다음 지워줘야 한다.
   const [bounds, setBounds] = useState();
+  const [roadview, setRoadview] = useState([]);
 
   const handleNavigate = (position) => {
     setPosition([position.coords.latitude, position.coords.longitude]);
+    setRoadview([position.coords.latitude, position.coords.longitude]);
   };
 
   const handleSearchFun = (result, status) => {
@@ -60,17 +194,23 @@ const Home = ({ userObj }) => {
     //클릭하는 순간 중심점을 이동시킨다.
     const movePoint = new kakao.maps.LatLng(where.y, where.x);
     map.panTo(movePoint);
+
+    // 목표물 표시
+    const center = document.querySelector("#map").firstChild;
+    center.style.display = "block";
+    setTimeout(() => {
+      center.style.display = "none";
+    }, 4000);
     //저장 버튼을 활성화 시킨다.  저장을 누르면 카테고리 별로 저장시킨다.
     e.target.lastChild.classList.toggle("display");
+    setRoadview([where.y, where.x]);
   };
 
   const saveFunction = async (newSavePlace, save) => {
     if (save) {
       await storeService.collection(`where-${userObj.uid}`).add(newSavePlace);
-      console.log("저장성공");
     } else {
       setError("이미 저장되어있는 장소입니다.");
-      console.log("실패");
     }
   };
 
@@ -195,29 +335,34 @@ const Home = ({ userObj }) => {
       <SearchWrapper>
         <SearchSubWrapper>
           {position !== [] ? (
-            <Map position={position} setMap={setMap}></Map>
+            <MapWrapper className="mapwrapper">
+              <Map position={position} setMap={setMap}></Map>
+              <Roadview position={roadview} map={map}></Roadview>
+              <ButtonWrapper>
+                {place.length !== 0 ? (
+                  <button onClick={() => map.setBounds(bounds)}>
+                    한번에 보기
+                  </button>
+                ) : (
+                  ""
+                )}
+                <button onClick={handleMapSizeClick} name="minus">
+                  지도 축소
+                </button>
+                <button onClick={handleMapSizeClick} name="plus">
+                  지도 확대
+                </button>
+                <button onClick={handleMapKindClick} name="roadmap">
+                  지도
+                </button>
+                <button onClick={handleMapKindClick} name="skymap">
+                  스카이뷰
+                </button>
+              </ButtonWrapper>
+            </MapWrapper>
           ) : (
             <div>"Loading..."</div>
           )}
-          <ButtonWrapper>
-            {place.length !== 0 ? (
-              <button onClick={() => map.setBounds(bounds)}>한번에 보기</button>
-            ) : (
-              ""
-            )}
-            <button onClick={handleMapSizeClick} name="minus">
-              지도 축소
-            </button>
-            <button onClick={handleMapSizeClick} name="plus">
-              지도 확대
-            </button>
-            <button onClick={handleMapKindClick} name="roadmap">
-              지도
-            </button>
-            <button onClick={handleMapKindClick} name="skymap">
-              스카이뷰
-            </button>
-          </ButtonWrapper>
         </SearchSubWrapper>
         <PlaceList>
           {place.length !== 0

@@ -143,50 +143,48 @@ const MyPage = ({ userObj }) => {
 
   const listItemClick = (e) => {
     const {
-      target: { lastChild },
+      target: { lastChild, innerText },
     } = e;
+    let changeText;
     lastChild.classList.toggle("display");
+    //리스트를 클릭하는 순간 지도 중심점 이동
+    innerText.includes("공유")
+      ? (changeText = innerText.split("공유")[0])
+      : (changeText = innerText);
+    const [target] = places.filter((item) => item.place_name === changeText);
+    const movePoint = new kakao.maps.LatLng(target.y, target.x);
+    map.setLevel(3);
+    map.setCenter(movePoint);
+    const center = document.querySelector("#map").firstChild;
+    center.style.display = "block";
+    setTimeout(() => {
+      center.style.display = "none";
+    }, 4000);
   };
 
-
-
-  const sendMessage =()=>{
+  const sendMessage = (address, title, imageUrl) => {
     Kakao.Link.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: '디저트 사진',
-          description: '아메리카노, 빵, 케익',
-          imageUrl:
-            'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+      objectType: "location",
+      address,
+      addressTitle: title,
+      content: {
+        title: "장소 공유",
+        description: title,
+        imageUrl,
+        link: {
+          webUrl: "https://developers.kakao.com", // 추후 수정 필요
+        },
+      },
+      buttons: [
+        {
+          title: "웹으로 이동",
           link: {
-            mobileWebUrl: 'https://developers.kakao.com',
-            androidExecParams: 'test',
+            mobileWebUrl: "https://developers.kakao.com", // 추후 수정 필요
           },
         },
-        social: {
-          likeCount: 10,
-          commentCount: 20,
-          sharedCount: 30,
-        },
-        buttons: [
-          {
-            title: '웹으로 이동',
-            link: {
-              mobileWebUrl: 'https://developers.kakao.com',
-            },
-          },
-          {
-            title: '앱으로 이동',
-            link: {
-              mobileWebUrl: 'https://developers.kakao.com',
-            },
-          },
-        ]
-      });
-  }
-
-
-
+      ],
+    });
+  };
 
   const shareBtnClick = (e) => {
     e.stopPropagation();
@@ -196,6 +194,12 @@ const MyPage = ({ userObj }) => {
     const [place] = places.filter((item) => item.id === id);
     //친구한테 공유를 해줘야한다.
     //test
+
+    sendMessage(
+      place.address_name,
+      place.place_name,
+      placeCode[place.category_group_code].url
+    );
   };
 
   useEffect(() => {
@@ -214,7 +218,7 @@ const MyPage = ({ userObj }) => {
     <>
       <Navigator />
       <Wrapper>
-        <Map position={position} setMap={setMap}></Map>
+        <Map position={position} setMap={setMap} isMyPage={true}></Map>
         <Container>
           <StoreKind>
             <li key="0" onClick={storeTitleClick} id="전체보기">
