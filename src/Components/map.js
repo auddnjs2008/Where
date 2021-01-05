@@ -36,11 +36,11 @@ const Marker = styled.div`
 const Map = ({ position, setMap, isMyPage }) => {
   const [marker, setMarker] = useState(null);
   const [controller, setControll] = useState(new kakao.maps.ZoomControl());
-
+  const positionObj = new kakao.maps.LatLng(position[0], position[1]);
   useEffect(() => {
     const container = document.getElementById("map");
     const options = {
-      center: new kakao.maps.LatLng(position[0], position[1]),
+      center: positionObj,
       level: 3,
     };
 
@@ -50,7 +50,7 @@ const Map = ({ position, setMap, isMyPage }) => {
       setMarker(
         new kakao.maps.Marker({
           map: map,
-          position: new kakao.maps.LatLng(position[0], position[1]),
+          position: positionObj,
         })
       );
     }

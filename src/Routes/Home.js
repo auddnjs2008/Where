@@ -18,6 +18,10 @@ const SearchSubWrapper = styled.div``;
 const MapWrapper = styled.div`
   display: flex;
   position: relative;
+
+  .placeCustom {
+  }
+
   .map_wrap {
     overflow: hidden;
     height: 330px;
@@ -167,11 +171,15 @@ const Home = ({ userObj }) => {
   const [place, setPlace] = useState([]);
   const [markers, setMarker] = useState([]); // 마커들을 검색하고 저장해둔 다음 지워줘야 한다.
   const [bounds, setBounds] = useState();
-  const [roadview, setRoadview] = useState([]);
+  const [roadview, setRoadview] = useState({});
 
   const handleNavigate = (position) => {
     setPosition([position.coords.latitude, position.coords.longitude]);
-    setRoadview([position.coords.latitude, position.coords.longitude]);
+    setRoadview({
+      place_name: "",
+      y: position.coords.latitude,
+      x: position.coords.longitude,
+    });
   };
 
   const handleSearchFun = (result, status) => {
@@ -201,9 +209,10 @@ const Home = ({ userObj }) => {
     setTimeout(() => {
       center.style.display = "none";
     }, 4000);
+
     //저장 버튼을 활성화 시킨다.  저장을 누르면 카테고리 별로 저장시킨다.
     e.target.lastChild.classList.toggle("display");
-    setRoadview([where.y, where.x]);
+    setRoadview(where);
   };
 
   const saveFunction = async (newSavePlace, save) => {
@@ -323,7 +332,11 @@ const Home = ({ userObj }) => {
         clickable: true,
         disableClickZoom: true,
       });
+
+      // 로드뷰에 나타나는 마커
+
       setMarker((prev) => [...prev, marker]);
+
       testBound.extend(newLat);
     }
     setBounds(testBound);
@@ -337,7 +350,7 @@ const Home = ({ userObj }) => {
           {position !== [] ? (
             <MapWrapper className="mapwrapper">
               <Map position={position} setMap={setMap}></Map>
-              <Roadview position={roadview} map={map}></Roadview>
+              <Roadview roadViewObj={roadview} map={map}></Roadview>
               <ButtonWrapper>
                 {place.length !== 0 ? (
                   <button onClick={() => map.setBounds(bounds)}>
