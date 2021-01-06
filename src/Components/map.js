@@ -54,9 +54,7 @@ const Map = ({ position, setMap, isMyPage }) => {
         })
       );
     }
-    // 로드뷰 도로를 지도위에 올린다.
-    map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
-    // 컨트롤러 생성
+
     map.addControl(controller, kakao.maps.ControlPosition.TOPRIGHT);
     setMap(map);
   }, [position]);
@@ -64,7 +62,7 @@ const Map = ({ position, setMap, isMyPage }) => {
   return (
     <div
       id="map"
-      style={{ position: "relative", width: "500px", height: "500px" }}
+      style={{ position: "relative", width: "90vw", height: "90vh" }}
     >
       <Marker className="center"></Marker>
     </div>

@@ -10,6 +10,7 @@ const Container = styled.div``;
 const Roadview = ({ roadViewObj, map }) => {
   const [mapWalker, setMapWalker] = useState(null);
   const [marker, setMarker] = useState(null);
+  const [roadmap, setRoadmap] = useState(null);
 
   function MapWalker(position) {
     // 맵 아이콘 생성 함수
@@ -77,12 +78,17 @@ const Roadview = ({ roadViewObj, map }) => {
           //title: where.place_name,
         });
         setMarker(roadMarker);
+
         // 커스텀 오버레이를 생성한다.  (검색창으로 이어질 수 있게 )
 
-        const content = `<div class="placeCustom" style="display:flex; padding:10px; background-color:white; ">
+        const content = roadViewObj.id
+          ? `<div class="placeCustom" style="display:flex; padding:10px; background-color:white; ">
             <div style="margin-right:5px; font-size:20px; font-weight:600;">${roadViewObj.place_name}</div>
-            <button class="searchBtn">검색</button>
-          </div>`;
+            <a target="_blank" href=https://place.map.kakao.com/${roadViewObj.id}><button class="searchBtn">검색</button></a>
+          </div>`
+          : `<div class="placeCustom" style="display:flex; padding:10px; background-color:white; ">
+          <div style="margin-right:5px; font-size:20px; font-weight:600;">${roadViewObj.place_name}</div>
+        </div>`;
 
         const customOverlay = new kakao.maps.CustomOverlay({
           position: positionObj,
@@ -114,15 +120,16 @@ const Roadview = ({ roadViewObj, map }) => {
       mapWalker.setPosition(position);
       map.setCenter(position);
 
-      //위치가 바뀔 때마다  마커가 보이도록 뷰포인트를 설정해줘야 한다.
-      const viewpoint = roadview
-        .getProjection()
-        .viewpointFromCoords(
-          roadMarker.getPosition(),
-          roadMarker.getAltitude()
-        );
-      roadview.setViewpoint(viewpoint);
+      // //위치가 바뀔 때마다  마커가 보이도록 뷰포인트를 설정해줘야 한다.
+      // const viewpoint = roadview
+      //   .getProjection()
+      //   .viewpointFromCoords(
+      //     roadMarker.getPosition(),
+      //     roadMarker.getAltitude()
+      //   );
+      // roadview.setViewpoint(viewpoint);
     });
+    setRoadmap(roadview);
   }, [roadViewObj, mapWalker]);
 
   useEffect(() => {
@@ -131,13 +138,17 @@ const Roadview = ({ roadViewObj, map }) => {
     );
   }, []);
 
-  // useEffect(() => {
-  //   const click = () => console.log("클릭");
-  //   if (searchButton) {
-  //     searchButton.addEventListener("click", click);
-  //   }
-  //   console.log(searchButton);
-  // }, [searchButton]);
+  useEffect(() => {
+    // 로드뷰가 다시 로드되면  마커가 보이도록 뷰포인트를 설정해주어야 한다.
+    if (marker) {
+      setTimeout(() => {
+        const viewpoint = roadmap
+          .getProjection()
+          .viewpointFromCoords(marker.getPosition(), marker.getAltitude());
+        roadmap.setViewpoint(viewpoint);
+      }, 700);
+    }
+  }, [marker]);
 
   return (
     <Container

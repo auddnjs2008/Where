@@ -1,118 +1,67 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
-import { authService, firebaseInstant } from "../firebase";
-import KaKaoLogin from "react-kakao-login";
-import KakaoLogin from "react-kakao-login";
+import EmailLogin from "../Components/EmailLogin";
+import SocialLogin from "../Components/SocialLogin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapSigns } from "@fortawesome/free-solid-svg-icons";
 
-const { Kakao } = window;
+const Container = styled.div`
+  width: 500px;
+  height: 550px;
+  margin: 0 auto;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(15, 15, 15, 0.8);
+`;
 
-const Form = styled.form``;
+const Error = styled.div`
+  width: 400px;
+  padding: 10px;
+  color: red;
 
-const SocialLogin = styled.div``;
+  @keyframes error {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  animation: error 0.5s linear;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+`;
 
 const Auth = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [newUser, setNewUser] = useState(false);
-  const [error, setError] = useState("");
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    let user;
-    try {
-      if (newUser) {
-        // 계정 생성을 해준다.
-        user = await authService.createUserWithEmailAndPassword(
-          email,
-          password
-        );
-      } else {
-        // 로그인을 해준다.
-        user = await authService.signInWithEmailAndPassword(email, password);
-      }
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const onChange = (e) => {
-    const {
-      target: { name, value },
-    } = e;
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
-  };
-
-  const socialLoginClick = async (e) => {
-    const {
-      target: { name },
-    } = e;
-    let provider;
-    try {
-      if (name === "google") {
-        provider = new firebaseInstant.auth.GoogleAuthProvider();
-      } else if (name === "github") {
-        provider = new firebaseInstant.auth.GithubAuthProvider();
-      }
-
-      await authService.signInWithPopup(provider);
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  // const kakaoLogin = ()=>{
-
-  //     Kakao.Auth.login({
-  //         success: (auth) =>
-  //         fail:(error) => console.log(error)
-  //     })
-  // }
-
-  const responseKakao = (res) => {
-    localStorage.setItem("kakao", JSON.stringify(res));
-    Kakao.Auth.setAccessToken(res.response.access_token);
-  };
-
-  const toggleBtnClick = () => setNewUser((prev) => !prev);
+  const [error, setError] = useState(null);
 
   return (
-    <>
-      <Form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          name="email"
-          type="email"
-          placeholder="What is your Email?"
-        />
-        <input
-          onChange={onChange}
-          name="password"
-          type="password"
-          placeholder="Password"
-        />
-        <input type="submit" value={newUser ? "Create" : "Log In"} />
-      </Form>
-      <button onClick={toggleBtnClick}>{newUser ? "Sign In" : "Create"}</button>
-      <div>{error}</div>
-      <SocialLogin>
-        <button onClick={socialLoginClick} name={"google"}>
-          Google Login
-        </button>
-        <button onClick={socialLoginClick} name={"github"}>
-          GitHub Login
-        </button>
-        <KakaoLogin
-          jsKey="e2a2fd82f5c318edfb424144be286f47"
-          onSuccess={(result) => responseKakao(result)}
-          onFailure={(error) => console.log(error)}
-          getProfile={true}
-        ></KakaoLogin>
-      </SocialLogin>
-    </>
+    <Container>
+      <TitleWrapper>
+        <FontAwesomeIcon
+          icon={faMapSigns}
+          style={{
+            width: "50px",
+            height: "50px",
+            color: "#f39c12",
+            marginRight: "10px",
+          }}
+        ></FontAwesomeIcon>
+        <h1>Where</h1>
+      </TitleWrapper>
+      <EmailLogin setError={setError}></EmailLogin>
+      {error ? <Error>{error}</Error> : ""}
+      <SocialLogin setError={setError} error={error}></SocialLogin>
+    </Container>
   );
 };
 

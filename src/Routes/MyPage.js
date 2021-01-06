@@ -7,6 +7,8 @@ import { storeService } from "../firebase";
 import { queryAllByAttribute } from "@testing-library/react";
 import placeCode from "../placeCode";
 import Map from "../Components/map";
+import Roadview from "../Components/roadview";
+import MapButton from "../Components/MapButton";
 
 const { kakao, Kakao } = window;
 
@@ -14,6 +16,127 @@ const Wrapper = styled.div`
   display: flex;
 `;
 const Container = styled.div``;
+
+const MapWrapper = styled.div`
+  position: relative;
+
+  .MapWalker {
+    position: absolute;
+    margin: -26px 0 0 -51px;
+  }
+  .MapWalker .figure {
+    position: absolute;
+    width: 25px;
+    left: 38px;
+    top: -2px;
+    height: 39px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png) -298px -114px
+      no-repeat;
+  }
+  .MapWalker .angleBack {
+    width: 102px;
+    height: 52px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png) -834px -2px
+      no-repeat;
+  }
+  .MapWalker.m0 .figure {
+    background-position: -298px -114px;
+  }
+  .MapWalker.m1 .figure {
+    background-position: -335px -114px;
+  }
+  .MapWalker.m2 .figure {
+    background-position: -372px -114px;
+  }
+  .MapWalker.m3 .figure {
+    background-position: -409px -114px;
+  }
+  .MapWalker.m4 .figure {
+    background-position: -446px -114px;
+  }
+  .MapWalker.m5 .figure {
+    background-position: -483px -114px;
+  }
+  .MapWalker.m6 .figure {
+    background-position: -520px -114px;
+  }
+  .MapWalker.m7 .figure {
+    background-position: -557px -114px;
+  }
+  .MapWalker.m8 .figure {
+    background-position: -2px -114px;
+  }
+  .MapWalker.m9 .figure {
+    background-position: -39px -114px;
+  }
+  .MapWalker.m10 .figure {
+    background-position: -76px -114px;
+  }
+  .MapWalker.m11 .figure {
+    background-position: -113px -114px;
+  }
+  .MapWalker.m12 .figure {
+    background-position: -150px -114px;
+  }
+  .MapWalker.m13 .figure {
+    background-position: -187px -114px;
+  }
+  .MapWalker.m14 .figure {
+    background-position: -224px -114px;
+  }
+  .MapWalker.m15 .figure {
+    background-position: -261px -114px;
+  }
+  .MapWalker.m0 .angleBack {
+    background-position: -834px -2px;
+  }
+  .MapWalker.m1 .angleBack {
+    background-position: -938px -2px;
+  }
+  .MapWalker.m2 .angleBack {
+    background-position: -1042px -2px;
+  }
+  .MapWalker.m3 .angleBack {
+    background-position: -1146px -2px;
+  }
+  .MapWalker.m4 .angleBack {
+    background-position: -1250px -2px;
+  }
+  .MapWalker.m5 .angleBack {
+    background-position: -1354px -2px;
+  }
+  .MapWalker.m6 .angleBack {
+    background-position: -1458px -2px;
+  }
+  .MapWalker.m7 .angleBack {
+    background-position: -1562px -2px;
+  }
+  .MapWalker.m8 .angleBack {
+    background-position: -2px -2px;
+  }
+  .MapWalker.m9 .angleBack {
+    background-position: -106px -2px;
+  }
+  .MapWalker.m10 .angleBack {
+    background-position: -210px -2px;
+  }
+  .MapWalker.m11 .angleBack {
+    background-position: -314px -2px;
+  }
+  .MapWalker.m12 .angleBack {
+    background-position: -418px -2px;
+  }
+  .MapWalker.m13 .angleBack {
+    background-position: -522px -2px;
+  }
+  .MapWalker.m14 .angleBack {
+    background-position: -626px -2px;
+  }
+  .MapWalker.m15 .angleBack {
+    background-position: -730px -2px;
+  }
+`;
+
 const StoreKind = styled.ul`
   display: flex;
   list-style: none;
@@ -31,12 +154,13 @@ const ItemList = styled.li`
 `;
 
 const MyPage = ({ userObj }) => {
-  const [places, setPlaces] = useState([]);
+  const [places, setPlaces] = useState([]); // 내가 가지고 있는 장소들
   const [position, setPosition] = useState([]);
   const [map, setMap] = useState(null);
-  const [list, setList] = useState([]);
+  const [list, setList] = useState([]); // 장소 타이틀을 클릭했을때  목록들
   const [marker, setMarker] = useState([]);
   const [bounds, setBounds] = useState();
+  const [roadObj, setRoadObj] = useState(null);
 
   const getData = async () => {
     let testArray = [];
@@ -160,6 +284,7 @@ const MyPage = ({ userObj }) => {
     setTimeout(() => {
       center.style.display = "none";
     }, 4000);
+    setRoadObj(target);
   };
 
   const sendMessage = (address, title, imageUrl) => {
@@ -218,7 +343,11 @@ const MyPage = ({ userObj }) => {
     <>
       <Navigator />
       <Wrapper>
-        <Map position={position} setMap={setMap} isMyPage={true}></Map>
+        <MapWrapper>
+          <Map position={position} setMap={setMap} isMyPage={true}></Map>
+          {roadObj ? <Roadview roadViewObj={roadObj} map={map}></Roadview> : ""}
+          <MapButton map={map} bounds={bounds} place={list}></MapButton>
+        </MapWrapper>
         <Container>
           <StoreKind>
             <li key="0" onClick={storeTitleClick} id="전체보기">

@@ -6,6 +6,7 @@ import { storeService } from "../firebase";
 import { queryAllByAttribute } from "@testing-library/react";
 import Navigator from "../Components/Navigator";
 import Roadview from "../Components/roadview";
+import ButtonWrapper from "../Components/MapButton";
 
 const { kakao, Kakao } = window;
 
@@ -144,13 +145,6 @@ const MapWrapper = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-`;
-
 const SearchForm = styled.form``;
 
 const PlaceList = styled.ul`
@@ -171,12 +165,12 @@ const Home = ({ userObj }) => {
   const [place, setPlace] = useState([]);
   const [markers, setMarker] = useState([]); // 마커들을 검색하고 저장해둔 다음 지워줘야 한다.
   const [bounds, setBounds] = useState();
-  const [roadview, setRoadview] = useState({});
+  const [roadview, setRoadview] = useState({}); // 리스트를 클릭했을때  넘겨줄 장소정보
 
   const handleNavigate = (position) => {
     setPosition([position.coords.latitude, position.coords.longitude]);
     setRoadview({
-      place_name: "",
+      place_name: "나의 위치",
       y: position.coords.latitude,
       x: position.coords.longitude,
     });
@@ -252,29 +246,6 @@ const Home = ({ userObj }) => {
     saveFunction(newPlace, save);
   };
 
-  const handleMapSizeClick = (e) => {
-    const {
-      target: { name },
-    } = e;
-    const mapLevel = map.getLevel();
-    if (name === "plus") {
-      map.setLevel(mapLevel - 1);
-    } else {
-      map.setLevel(mapLevel + 1);
-    }
-  };
-
-  const handleMapKindClick = (e) => {
-    const {
-      target: { name },
-    } = e;
-    if (name === "roadmap") {
-      map.setMapTypeId(kakao.maps.MapTypeId.ROADMAP);
-    } else {
-      map.setMapTypeId(kakao.maps.MapTypeId.HYBRID);
-    }
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -295,8 +266,9 @@ const Home = ({ userObj }) => {
   };
 
   useEffect(() => {
-    if (navigator.geolocation)
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleNavigate);
+    }
   }, []);
 
   useEffect(() => {
@@ -351,27 +323,11 @@ const Home = ({ userObj }) => {
             <MapWrapper className="mapwrapper">
               <Map position={position} setMap={setMap}></Map>
               <Roadview roadViewObj={roadview} map={map}></Roadview>
-              <ButtonWrapper>
-                {place.length !== 0 ? (
-                  <button onClick={() => map.setBounds(bounds)}>
-                    한번에 보기
-                  </button>
-                ) : (
-                  ""
-                )}
-                <button onClick={handleMapSizeClick} name="minus">
-                  지도 축소
-                </button>
-                <button onClick={handleMapSizeClick} name="plus">
-                  지도 확대
-                </button>
-                <button onClick={handleMapKindClick} name="roadmap">
-                  지도
-                </button>
-                <button onClick={handleMapKindClick} name="skymap">
-                  스카이뷰
-                </button>
-              </ButtonWrapper>
+              <ButtonWrapper
+                map={map}
+                bounds={bounds}
+                place={place}
+              ></ButtonWrapper>
             </MapWrapper>
           ) : (
             <div>"Loading..."</div>
