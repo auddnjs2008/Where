@@ -62,7 +62,12 @@ const Map = ({ position, setMap, isMyPage }) => {
   return (
     <div
       id="map"
-      style={{ position: "relative", width: "90vw", height: "90vh" }}
+      style={{
+        position: "relative",
+        top: "0",
+        width: "99vw",
+        height: "99vh",
+      }}
     >
       <Marker className="center"></Marker>
     </div>
@@ -70,3 +75,9 @@ const Map = ({ position, setMap, isMyPage }) => {
 };
 
 export default Map;
+
+Map.propTypes = {
+  position: PropTypes.array.isRequired,
+  setMap: PropTypes.func,
+  isMyPage: PropTypes.bool,
+};

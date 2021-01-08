@@ -5,12 +5,81 @@ import { useState, useEffect } from "react";
 
 const { kakao } = window;
 
-const Container = styled.div``;
+const Container = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+`;
 
-const Roadview = ({ roadViewObj, map }) => {
+const Roadview = ({ roadViewObj, map, setRoadObj, setRoadview }) => {
   const [mapWalker, setMapWalker] = useState(null);
   const [marker, setMarker] = useState(null);
   const [roadmap, setRoadmap] = useState(null);
+
+  //const [start, setStart] = useState([]); // [startY,startX]
+  //const [startOverlayPoint, setPoint] = useState(null);
+  let startOverlayPoint = null;
+  let start = [];
+  const onMouseDown = (e) => {
+    if (e.preventDefault()) {
+      e.preventDefault();
+    } else {
+      e.returnValue = true;
+    }
+
+    const proj = map.getProjection();
+    const overlayPos = mapWalker.walker.getPosition();
+
+    kakao.maps.event.preventMap();
+    start = [e.clientY, e.clientX];
+
+    startOverlayPoint = proj.containerPointFromCoords(overlayPos);
+    // 로드맵의 포지션을 바꿔주야 한다.
+
+    addEventHandle(document, "mousemove", onMouseMove);
+  };
+
+  const onMouseMove = (e) => {
+    if (e.preventDefault) {
+      e.preventDefault();
+    } else {
+      e.returnValue = false;
+    }
+
+    const proj = map.getProjection();
+    const deltaX = start[1] - e.clientX;
+    const deltaY = start[0] - e.clientY;
+    const newPoint = new kakao.maps.Point(
+      startOverlayPoint.x - deltaX,
+      startOverlayPoint.y - deltaY
+    );
+    const newPos = proj.coordsFromContainerPoint(newPoint);
+    mapWalker.walker.setPosition(newPos);
+  };
+
+  const onMouseUp = (e) => {
+    map.setCenter(mapWalker.walker.getPosition());
+    // 로드뷰 셋팅을 다시 해줘야 한다.
+    setRoadview({
+      y: mapWalker.walker.getPosition().Ma,
+      x: mapWalker.walker.getPosition().La,
+      place_name: "여행중",
+    });
+    removeEventHandle(document, "mousemove", onMouseMove);
+  };
+
+  const addEventHandle = (target, type, callback) => {
+    if (target.addEventListener) {
+      target.addEventListener(type, callback);
+    }
+  };
+
+  const removeEventHandle = (target, type, callback) => {
+    if (target.removeEventListener) {
+      target.removeEventListener(type, callback);
+    }
+  };
 
   function MapWalker(position) {
     // 맵 아이콘 생성 함수
@@ -69,7 +138,7 @@ const Roadview = ({ roadViewObj, map }) => {
     roadviewClient.getNearestPanoId(positionObj, 50, function (panoId) {
       if (panoId != null) {
         roadview.setPanoId(panoId, positionObj); //panoId와 중심좌표를 통해 로드뷰 실행
-
+        document.querySelector("#roadview").style.opacity = "1";
         if (marker) marker.setMap(null); // 만약 마커가 있으면 지워줘야 한다.
 
         roadMarker = new kakao.maps.Marker({
@@ -77,7 +146,6 @@ const Roadview = ({ roadViewObj, map }) => {
           map: roadview,
           //title: where.place_name,
         });
-        setMarker(roadMarker);
 
         // 커스텀 오버레이를 생성한다.  (검색창으로 이어질 수 있게 )
 
@@ -96,10 +164,16 @@ const Roadview = ({ roadViewObj, map }) => {
           xAnchor: 0.3,
           yAnchor: 1.9,
         });
-
+        setMarker(roadMarker);
         customOverlay.setMap(roadview);
+      } else {
+        if (document.querySelector("#roadview"))
+          document.querySelector("#roadview").style.opacity = "0.3";
       }
+      setRoadObj(roadview);
     });
+
+    // 지도위에 동동이를 드래그 할 수 있게 해보자.
 
     // 동동이를 지도에 올려준다.
 
@@ -119,28 +193,22 @@ const Roadview = ({ roadViewObj, map }) => {
       const position = roadview.getPosition();
       mapWalker.setPosition(position);
       map.setCenter(position);
-
-      // //위치가 바뀔 때마다  마커가 보이도록 뷰포인트를 설정해줘야 한다.
-      // const viewpoint = roadview
-      //   .getProjection()
-      //   .viewpointFromCoords(
-      //     roadMarker.getPosition(),
-      //     roadMarker.getAltitude()
-      //   );
-      // roadview.setViewpoint(viewpoint);
     });
     setRoadmap(roadview);
   }, [roadViewObj, mapWalker]);
 
   useEffect(() => {
     setMapWalker(
-      new MapWalker(new kakao.maps.LatLng(roadViewObj.y, roadViewObj.x))
+      new MapWalker(
+        new kakao.maps.LatLng(parseInt(roadViewObj.y), parseInt(roadViewObj.x))
+      )
     );
   }, []);
 
   useEffect(() => {
     // 로드뷰가 다시 로드되면  마커가 보이도록 뷰포인트를 설정해주어야 한다.
-    if (marker) {
+
+    if (marker && roadmap) {
       setTimeout(() => {
         const viewpoint = roadmap
           .getProjection()
@@ -150,12 +218,26 @@ const Roadview = ({ roadViewObj, map }) => {
     }
   }, [marker]);
 
+  useEffect(() => {
+    if (mapWalker) {
+      addEventHandle(mapWalker.content, "mousedown", onMouseDown);
+      addEventHandle(mapWalker.content, "mouseup", onMouseUp);
+    }
+  }, [mapWalker, map]);
+
   return (
     <Container
       id="roadview"
-      style={{ width: "500px", height: "500px" }}
+      style={{ width: "200px", height: "200px" }}
     ></Container>
   );
 };
 
 export default Roadview;
+
+Roadview.propTypes = {
+  roadViewObj: PropTypes.object,
+  map: PropTypes.object.isRequired,
+  setRoadObj: PropTypes.func,
+  setRoadview: PropTypes.func,
+};
