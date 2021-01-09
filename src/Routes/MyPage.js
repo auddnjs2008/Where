@@ -18,9 +18,11 @@ const Wrapper = styled.div`
 `;
 const Container = styled.div`
   position: absolute;
+  display: flex;
+  border: 10px solid red;
   z-index: 3;
   top: 0;
-  right: 20px;
+  right: 100px;
 `;
 
 const MyPage = ({ userObj }) => {
@@ -115,8 +117,10 @@ const MyPage = ({ userObj }) => {
             bounds={bounds}
           ></MyStoreKind>
           <MyListWindow
+            userObj={userObj}
             map={map}
             places={places}
+            setPlaces={setPlaces}
             setRoadViewObj={setRoadViewObj}
             list={list}
           ></MyListWindow>

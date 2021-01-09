@@ -2,24 +2,43 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import placeCode from "../placeCode";
+import { storeService } from "../firebase";
+import { queryAllByAttribute } from "@testing-library/react";
 
 const { kakao, Kakao } = window;
 
-const ShowWindow = styled.ul``;
+const ShowWindow = styled.ul`
+  list-style: none;
+  background-color: white;
+  padding: 5px;
+  width: 250px;
+  height: 243px;
+  overflow: auto;
+`;
 
 const ItemList = styled.li`
+  margin-bottom: 20px;
   button.display {
     display: none;
   }
 `;
 
-const MyListWindow = ({ map, places, setRoadViewObj, list }) => {
+const ButtonWrapper = styled.div``;
+
+const MyListWindow = ({
+  userObj,
+  map,
+  places,
+  setPlaces,
+  setRoadViewObj,
+  list,
+}) => {
   const listItemClick = (e) => {
     const {
       target: { lastChild, innerText },
     } = e;
     let changeText;
-    lastChild.classList.toggle("display");
+
     //리스트를 클릭하는 순간 지도 중심점 이동
     innerText.includes("공유")
       ? (changeText = innerText.split("공유")[0])
@@ -76,15 +95,38 @@ const MyListWindow = ({ map, places, setRoadViewObj, list }) => {
     );
   };
 
+  const deleteBtnClick = async (e) => {
+    e.stopPropagation();
+    const newList = [];
+    const object = await storeService
+      .collection(`where-${userObj.uid}`)
+      .get(queryAllByAttribute);
+    object.forEach((item) => {
+      if (item.data().id === e.target.id) {
+        item.ref.delete();
+      } else {
+        newList.push(item.data());
+      }
+    });
+
+    setPlaces(newList);
+    // 화면을 사라져줘야 한다. 페이크로라도
+  };
+
   return (
     <ShowWindow>
       {list.length !== 0
         ? list.map((item) => (
             <ItemList onClick={listItemClick} key={item.id}>
               {item.place_name}
-              <button id={item.id} onClick={shareBtnClick} className="display">
-                공유
-              </button>
+              <ButtonWrapper>
+                <button id={item.id} onClick={shareBtnClick}>
+                  공유
+                </button>
+                <button id={item.id} onClick={deleteBtnClick}>
+                  삭제
+                </button>
+              </ButtonWrapper>
             </ItemList>
           ))
         : ""}

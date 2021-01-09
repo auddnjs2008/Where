@@ -9,7 +9,8 @@ const MyMapContainer = styled.div``;
 
 const MapWrapper = styled.div`
   position: relative;
-
+  width: 99vw;
+  height: 99vh;
   .MapWalker {
     position: absolute;
     margin: -26px 0 0 -51px;

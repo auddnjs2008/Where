@@ -6,10 +6,19 @@ import placeCode from "../placeCode";
 const { kakao, Kakao } = window;
 
 const StoreKind = styled.ul`
-  display: flex;
+  background-color: rgba(25, 25, 25, 0.5);
+  color: white;
+
+  padding: 0px;
+  //display: flex;
   list-style: none;
   li {
-    margin-right: 10px;
+    cursor: pointer;
+    width: inherit;
+    text-align: center;
+    padding: 5px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(20, 20, 20, 0.7);
   }
 `;
 
