@@ -13,6 +13,7 @@ const Container = styled.ul`
   justify-content: space-between;
   width: 500px;
   height: 50px;
+
   li,
   button {
     background-color: #f39c12;
@@ -22,6 +23,9 @@ const Container = styled.ul`
     border: 5px solid black;
     transition: all 0.5s linear;
     z-index: 100;
+    color: red;
+    font-weight: 700;
+    font-size: 20px;
   }
 
   li:nth-child(1) {
@@ -50,8 +54,14 @@ const Container = styled.ul`
 
 const SLink = styled(Link)`
   display: flex;
+  height: 80%;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
   padding: 10px;
+  color: red;
+  font-weight: 600;
 `;
 
 const Navigator = () => {

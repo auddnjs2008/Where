@@ -143,7 +143,11 @@ const HomeSearchList = ({ place, map, setRoadview, setError, userObj }) => {
     let save = true;
     const {
       target: {
-        parentNode: { id },
+        parentNode: {
+          parentNode: {
+            parentNode: { id },
+          },
+        },
       },
     } = e;
     const object = place[id];
@@ -236,7 +240,7 @@ export default HomeSearchList;
 
 HomeSearchList.propTypes = {
   place: PropTypes.array,
-  map: PropTypes.object.isRequired,
+  map: PropTypes.object,
   setRoadview: PropTypes.func,
   setError: PropTypes.func,
   userObj: PropTypes.object.isRequired,

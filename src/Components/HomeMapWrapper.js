@@ -145,7 +145,6 @@ const HomeMapWrapper = ({
   setRoadObj,
   roadMapObj,
 }) => {
-  console.log(position);
   return (
     <HomeMapContainer>
       {position !== [] ? (
@@ -175,9 +174,9 @@ export default HomeMapWrapper;
 
 HomeMapWrapper.propTypes = {
   position: PropTypes.array.isRequired,
-  map: PropTypes.object.isRequired,
+  map: PropTypes.object,
   setMap: PropTypes.func,
   roadview: PropTypes.object.isRequired,
-  bounds: PropTypes.array,
+  bounds: PropTypes.object,
   place: PropTypes.array,
 };

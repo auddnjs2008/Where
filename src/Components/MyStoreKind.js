@@ -3,10 +3,10 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import placeCode from "../placeCode";
 
-const { kakao, Kakao } = window;
+const { kakao } = window;
 
 const StoreKind = styled.ul`
-  background-color: rgba(25, 25, 25, 0.5);
+  //background-color: rgba(25, 25, 25, 0.5);
   color: white;
 
   padding: 0px;
@@ -14,11 +14,16 @@ const StoreKind = styled.ul`
   list-style: none;
   li {
     cursor: pointer;
+    background-color: rgba(25, 25, 25, 0.5);
+
     width: inherit;
     text-align: center;
     padding: 5px;
     font-size: 13px;
     border-bottom: 1px solid rgba(20, 20, 20, 0.7);
+    &:nth-child(1) {
+      background-color: #f39c12;
+    }
   }
 `;
 
@@ -29,6 +34,18 @@ const MyStoreKind = ({ map, setList, places, marker, bounds }) => {
     } = e;
     let showMarker = [];
     const testBound = new kakao.maps.LatLngBounds();
+
+    // 클릭한 아이의 배경색깔을 바꿔준다.
+
+    e.target.style.backgroundColor = " #f39c12";
+    document
+      .querySelector(".storekind")
+      .querySelectorAll("li")
+      .forEach((item) =>
+        item !== e.target
+          ? (item.style.backgroundColor = " rgba(25, 25, 25, 0.5)")
+          : ""
+      );
 
     if (id !== "기타" && id !== "전체보기") {
       //카테고리 타입이 id인 요소들을 찾아준다.
@@ -58,7 +75,8 @@ const MyStoreKind = ({ map, setList, places, marker, bounds }) => {
     //리스트를 클릭하면 그 해당하는 리스트 마커만 표시해준다.
     if (id !== "전체보기") {
       for (let i = 0; i < marker.length; i++) {
-        if (placeCode[marker[i].code].title === id) {
+        let markerCode = marker[i].code ? marker[i].code : "PS3"; // 코드가 없는아이들은 기타 항목에 넣어줄 수 있도록 해준다.
+        if (placeCode[markerCode].title === id) {
           showMarker.push(marker[i]);
           marker[i].marker.setMap(map);
           testBound.extend(new kakao.maps.LatLng(places[i].y, places[i].x));
@@ -80,8 +98,32 @@ const MyStoreKind = ({ map, setList, places, marker, bounds }) => {
     // 그 리스트들만 보이게 중심좌표 이동
   };
 
+  // const handleClickBackground = (e) => {
+  //   e.target.style.backgroundColor = " #f39c12";
+  //   document
+  //     .querySelector(".storekind")
+  //     .querySelectorAll("li")
+  //     .forEach((item) =>
+  //       item !== e.target
+  //         ? (item.style.backgroundColor = "rgba(25, 25, 25, 0.5)")
+  //         : ""
+  //     );
+  // };
+
+  // useEffect(() => {
+  //   const menu = document.querySelector(".storekind").querySelectorAll("li");
+  //   menu.forEach((item) =>
+  //     item.addEventListener("click", handleClickBackground)
+  //   );
+
+  //   return () =>
+  //     menu.forEach((item) =>
+  //       item.removeEventListener("click", handleClickBackground)
+  //     );
+  // }, []);
+
   return (
-    <StoreKind>
+    <StoreKind className="storekind">
       <li key="0" onClick={storeTitleClick} id="전체보기">
         전체보기
       </li>

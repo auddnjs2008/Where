@@ -3,11 +3,7 @@ import styled from "styled-components";
 import KakaoLogin from "react-kakao-login";
 import { authService, firebaseInstant } from "../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGithub,
-  faGoogle,
-  faKaggle,
-} from "@fortawesome/free-brands-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const { Kakao } = window;
 

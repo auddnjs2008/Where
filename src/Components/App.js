@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { authService } from "../firebase";
-import Map from "./map";
 import AppRouter from "./Router";
 
 function App() {

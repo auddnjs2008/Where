@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
@@ -10,13 +10,13 @@ import {
   faPlaneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
-const { kakao, Kakao } = window;
+const { kakao } = window;
 
 const ButtonWrapper = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 0;
+  top: 15px;
   right: 50px;
   z-index: 3;
   button {

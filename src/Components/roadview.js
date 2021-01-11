@@ -181,19 +181,20 @@ const Roadview = ({ roadViewObj, map, setRoadObj, setRoadview }) => {
     // 로드뷰를 상,하,좌.우 .줌인 줌아웃을 할경우 발생
 
     if (mapWalker !== null) mapWalker.setMap(map);
+    if (mapWalker) {
+      kakao.maps.event.addListener(roadview, "viewpoint_changed", function () {
+        const viewpoint = roadview.getViewpoint();
+        mapWalker.setAngle(viewpoint.pan);
+      });
 
-    kakao.maps.event.addListener(roadview, "viewpoint_changed", function () {
-      const viewpoint = roadview.getViewpoint();
-      mapWalker.setAngle(viewpoint.pan);
-    });
-
-    // 로드뷰내의 화살표나 점프를 하였을 경우 발생하낟.
-    // position값이 바뀔 때마다 map walker의 상태를 변경해 준다.
-    kakao.maps.event.addListener(roadview, "position_changed", function () {
-      const position = roadview.getPosition();
-      mapWalker.setPosition(position);
-      map.setCenter(position);
-    });
+      // 로드뷰내의 화살표나 점프를 하였을 경우 발생하낟.
+      // position값이 바뀔 때마다 map walker의 상태를 변경해 준다.
+      kakao.maps.event.addListener(roadview, "position_changed", function () {
+        const position = roadview.getPosition();
+        mapWalker.setPosition(position);
+        map.setCenter(position);
+      });
+    }
     setRoadmap(roadview);
   }, [roadViewObj, mapWalker]);
 
@@ -214,7 +215,7 @@ const Roadview = ({ roadViewObj, map, setRoadObj, setRoadview }) => {
           .getProjection()
           .viewpointFromCoords(marker.getPosition(), marker.getAltitude());
         roadmap.setViewpoint(viewpoint);
-      }, 700);
+      }, 850);
     }
   }, [marker]);
 
@@ -237,7 +238,7 @@ export default Roadview;
 
 Roadview.propTypes = {
   roadViewObj: PropTypes.object,
-  map: PropTypes.object.isRequired,
+  map: PropTypes.object,
   setRoadObj: PropTypes.func,
   setRoadview: PropTypes.func,
 };

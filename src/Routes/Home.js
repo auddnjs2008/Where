@@ -116,3 +116,7 @@ const Home = ({ userObj }) => {
 };
 
 export default Home;
+
+Home.propTypes = {
+  userObj: PropTypes.object,
+};

@@ -97,6 +97,6 @@ export default HomeSearchForm;
 
 HomeSearchForm.propTypes = {
   setPlace: PropTypes.func,
-  map: PropTypes.object.isRequired,
+  map: PropTypes.object,
   setError: PropTypes.func,
 };

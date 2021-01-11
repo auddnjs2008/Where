@@ -5,7 +5,15 @@ import Map from "./map";
 import Roadview from "./roadview";
 import MapButton from "./MapButton";
 
-const MyMapContainer = styled.div``;
+const MyMapContainer = styled.div`
+  .loading {
+    font-size: 30px;
+    width: 99vw;
+    height: 99vh;
+    z-index: 100;
+    font-weight: 600;
+  }
+`;
 
 const MapWrapper = styled.div`
   position: relative;
@@ -158,7 +166,7 @@ const MyMapWrapper = ({
           ></MapButton>
         </MapWrapper>
       ) : (
-        <div>"Loading..."</div>
+        <div className="loading">Loading...</div>
       )}
     </MyMapContainer>
   );
