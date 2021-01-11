@@ -117,7 +117,7 @@ const MyListWindow = ({
         description: place.place_name,
         imageUrl,
         link: {
-          webUrl: "https://developers.kakao.com", // 추후 수정 필요
+          webUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
         },
       },
       buttons: [

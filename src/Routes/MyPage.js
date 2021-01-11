@@ -10,7 +10,7 @@ import MyStoreKind from "../Components/MyStoreKind";
 import MyListWindow from "../Components/MyListWindow";
 import MyListPackShare from "../Components/MyListPackShare";
 
-const { kakao, Kakao } = window;
+const { kakao } = window;
 
 const Wrapper = styled.div`
   display: flex;

@@ -95,14 +95,14 @@ const MyListPackShare = ({ packShare, places }) => {
   const sendMessage = (places) => {
     Kakao.Link.sendDefault({
       objectType: "list",
-      headerLink: { webUrl: "https://developers.kakao.com" },
+      headerLink: { webUrl: "https://wizardly-hopper-833bfb.netlify.app" },
       headerTitle: "장소 공유 리스트",
       contents: places,
       buttons: [
         {
           title: "상세보기",
           link: {
-            mobileWebUrl: "https://developers.kakao.com", // 추후 수정 필요
+            mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
           },
         },
       ],
