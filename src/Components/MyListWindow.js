@@ -139,8 +139,10 @@ const MyListWindow = ({
     const [place] = places.filter((item) => item.id === id);
     //친구한테 공유를 해줘야한다.
     //test
-
-    sendMessage(place, placeCode[place.category_group_code].url);
+    const url = place.category_group_code
+      ? placeCode[place.category_group_code].url
+      : placeCode["PS3"].url;
+    sendMessage(place, url);
   };
 
   const deleteBtnClick = async (e) => {

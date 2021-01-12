@@ -69,8 +69,8 @@ const MyListPackShare = ({ packShare, places }) => {
       if (item.checked) {
         testArray.push({
           ...places[index],
-          imageUrl: places[index].code
-            ? placeCode[places[index].code].url
+          imageUrl: places[index].category_group_code
+            ? placeCode[places[index].category_group_code].url
             : placeCode["PS3"].url,
         });
       }

@@ -75,7 +75,9 @@ const MyStoreKind = ({ map, setList, places, marker, bounds }) => {
     //리스트를 클릭하면 그 해당하는 리스트 마커만 표시해준다.
     if (id !== "전체보기") {
       for (let i = 0; i < marker.length; i++) {
-        let markerCode = marker[i].code ? marker[i].code : "PS3"; // 코드가 없는아이들은 기타 항목에 넣어줄 수 있도록 해준다.
+        let markerCode = marker[i].category_group_code
+          ? marker[i].category_group_code
+          : "PS3"; // 코드가 없는아이들은 기타 항목에 넣어줄 수 있도록 해준다.
         if (placeCode[markerCode].title === id) {
           showMarker.push(marker[i]);
           marker[i].marker.setMap(map);
