@@ -125,8 +125,8 @@ const MyListWindow = ({
         {
           title: "상세보기",
           link: {
-            mobileWebUrl: place.place_url, // 추후 수정 필요
             webUrl: place.place_url,
+            mobileWebUrl: place.place_url, // 추후 수정 필요
           },
         },
       ],

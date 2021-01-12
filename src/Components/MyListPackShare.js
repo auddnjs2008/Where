@@ -103,10 +103,10 @@ const MyListPackShare = ({ packShare, places }) => {
       contents: places,
       buttons: [
         {
-          title: "상세보기",
+          title: "앱이용",
           link: {
-            mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app",
             webUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
+            mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app",
           },
         },
       ],
