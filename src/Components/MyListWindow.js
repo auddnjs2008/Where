@@ -118,6 +118,7 @@ const MyListWindow = ({
         imageUrl,
         link: {
           webUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
+          mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app",
         },
       },
       buttons: [
@@ -125,6 +126,7 @@ const MyListWindow = ({
           title: "상세보기",
           link: {
             mobileWebUrl: place.place_url, // 추후 수정 필요
+            webUrl: place.place_url,
           },
         },
       ],

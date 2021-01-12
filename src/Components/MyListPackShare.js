@@ -82,7 +82,7 @@ const MyListPackShare = ({ packShare, places }) => {
         imageUrl: item.imageUrl,
         imageWidth: 50,
         imageHeight: 50,
-        link: { webUrl: item.place_url },
+        link: { webUrl: item.place_url, mobileWebUrl: item.place_url },
       };
     });
 
@@ -95,14 +95,18 @@ const MyListPackShare = ({ packShare, places }) => {
   const sendMessage = (places) => {
     Kakao.Link.sendDefault({
       objectType: "list",
-      headerLink: { webUrl: "https://wizardly-hopper-833bfb.netlify.app" },
+      headerLink: {
+        webUrl: "https://wizardly-hopper-833bfb.netlify.app",
+        mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app",
+      },
       headerTitle: "장소 공유 리스트",
       contents: places,
       buttons: [
         {
           title: "상세보기",
           link: {
-            mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
+            mobileWebUrl: "https://wizardly-hopper-833bfb.netlify.app",
+            webUrl: "https://wizardly-hopper-833bfb.netlify.app", // 추후 수정 필요
           },
         },
       ],
