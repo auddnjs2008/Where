@@ -22,7 +22,10 @@ const Container = styled.div`
   display: flex;
   z-index: 3;
   top: 0;
-  right: 100px;
+  right: ${(props) => (props.size < 600 ? "0px" : "100px")};
+  width: ${(props) => (props.size < 600 ? "250px" : "")};
+  margin-top: ${(props) => (props.size < 600 ? "-20px" : "")};
+  transition: all 0.5s linear;
 `;
 
 const MyPage = ({ userObj }) => {
@@ -34,7 +37,7 @@ const MyPage = ({ userObj }) => {
   const [bounds, setBounds] = useState();
   const [roadViewObj, setRoadViewObj] = useState(null); // 로드맵 안내표 받아오기
   const [roadview, setRoadview] = useState(null); // 로드맵 받아오기
-
+  const [size, setWindow] = useState(window.innerWidth);
   const packShare = useRef();
 
   const getData = async () => {
@@ -101,6 +104,13 @@ const MyPage = ({ userObj }) => {
     }
   }, [map]);
 
+  useEffect(() => {
+    window.addEventListener("resize", () => setWindow(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWindow(window.innerWidth));
+  }, []);
+
   //1.음식점 2.카페 3.숙박 4.편의점 5.병원 6.약국 7.관광명소 8.
 
   return (
@@ -118,7 +128,7 @@ const MyPage = ({ userObj }) => {
           setRoadViewObj={setRoadViewObj}
           setRoadview={setRoadview}
         ></MyMapWrapper>
-        <Container>
+        <Container size={size}>
           <MyStoreKind
             map={map}
             setList={setList}

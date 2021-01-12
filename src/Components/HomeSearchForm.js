@@ -11,7 +11,7 @@ const SearchForm = styled.form`
   display: flex;
   align-items: center;
   top: 0;
-  right: 100px;
+  right: 50px;
   z-index: 10;
   input[type="text"] {
     outline: none;

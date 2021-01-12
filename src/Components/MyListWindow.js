@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import placeCode from "../placeCode";
@@ -11,7 +11,7 @@ const ShowWindow = styled.ul`
   list-style: none;
   background-color: white;
   padding: 5px;
-  width: 250px;
+  width: ${(props) => (props.size < 600 ? "170px" : "250px")};
   height: 243px;
   overflow: auto;
   .empty {
@@ -71,6 +71,9 @@ const PackSendBtn = styled.button`
     transform: scale(0.9, 0.9);
   }
 `;
+const WindowHideBtn = styled(PackSendBtn)`
+  right: 80px;
+`;
 
 const MyListWindow = ({
   userObj,
@@ -82,6 +85,8 @@ const MyListWindow = ({
   setList,
   packShare,
 }) => {
+  const [size, setWindow] = useState(window.innerWidth);
+
   const listItemClick = (e) => {
     const {
       currentTarget: { innerText },
@@ -174,9 +179,26 @@ const MyListWindow = ({
     packShare.current.style.display = "block";
   };
 
+  const menuHideBtnClick = (e) => {
+    if (e.target.innerText.includes("숨기기")) {
+      e.target.parentNode.style.top = "-240px";
+      e.target.innerText = "메뉴바 보이기";
+    } else {
+      e.target.parentNode.style.top = "0px";
+      e.target.innerText = "메뉴바  숨기기";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", () => setWindow(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWindow(window.innerWidth));
+  }, []);
+
   return (
     <>
-      <ShowWindow>
+      <ShowWindow size={size}>
         {list.length !== 0 ? (
           list.map((item) => (
             <ItemList className="list" onClick={listItemClick} key={item.id}>
@@ -198,6 +220,7 @@ const MyListWindow = ({
           <div className="empty">List is empty</div>
         )}
       </ShowWindow>
+      <WindowHideBtn onClick={menuHideBtnClick}>메뉴바 숨기기</WindowHideBtn>
       {places.length !== 0 ? (
         <PackSendBtn onClick={packShareBtnClick}>묶음 공유</PackSendBtn>
       ) : (

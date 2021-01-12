@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
@@ -16,8 +16,8 @@ const ButtonWrapper = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 15px;
-  right: 50px;
+  bottom: 5px;
+  right: 10px;
   z-index: 3;
   button {
     width: 40px;
@@ -35,6 +35,8 @@ const ButtonWrapper = styled.div`
 `;
 
 const MapButton = ({ map, bounds, place, roadmap }) => {
+  const [size, setWindow] = useState(window.innerWidth);
+
   const handleMapSizeClick = (e) => {
     const {
       currentTarget: { name },
@@ -108,8 +110,15 @@ const MapButton = ({ map, bounds, place, roadmap }) => {
     //map.setLevel(1);
   };
 
+  useEffect(() => {
+    window.addEventListener("resize", () => setWindow(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWindow(window.innerWidth));
+  }, []);
+
   return (
-    <ButtonWrapper>
+    <ButtonWrapper size={size}>
       {place.length !== 0 ? (
         <button onClick={() => map.setBounds(bounds)}>한번에 보기</button>
       ) : (

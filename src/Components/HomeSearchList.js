@@ -12,7 +12,7 @@ const Container = styled.div`
   z-index: 10;
   position: absolute;
   top: 30px;
-  right: 100px;
+  right: 50px;
   overflow: hidden;
 `;
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import placeCode from "../placeCode";
@@ -13,7 +13,7 @@ const Container = styled.ul`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 330px;
+  width: ${(props) => (props.size < 600 ? "300px" : "330px")};
   height: 330px;
   background-color: white;
   display: none;
@@ -60,6 +60,7 @@ const Error = styled.div`
 
 const MyListPackShare = ({ packShare, places }) => {
   const [error, setError] = useState("");
+  const [size, setWindow] = useState(window.innerWidth);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -118,9 +119,15 @@ const MyListPackShare = ({ packShare, places }) => {
     packShare.current.style.display = "none";
     setError("");
   };
+  useEffect(() => {
+    window.addEventListener("resize", () => setWindow(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWindow(window.innerWidth));
+  }, []);
 
   return (
-    <Container ref={packShare}>
+    <Container ref={packShare} size={size}>
       {places.length !== 0 ? (
         <h4>최소 2개 최대 3개까지 선택하실 수 있습니다</h4>
       ) : (

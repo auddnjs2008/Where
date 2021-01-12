@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { authService } from "../firebase";
+import GlobalStyles from "./GlobalStyle";
 import AppRouter from "./Router";
 
 function App() {
@@ -22,7 +23,10 @@ function App() {
   }, []);
 
   return init ? (
-    <AppRouter isLogIn={Boolean(userObj)} userObj={userObj}></AppRouter>
+    <>
+      <AppRouter isLogIn={Boolean(userObj)} userObj={userObj}></AppRouter>
+      <GlobalStyles />
+    </>
   ) : (
     "Loading...."
   );
