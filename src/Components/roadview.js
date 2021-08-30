@@ -215,7 +215,7 @@ const Roadview = ({ roadViewObj, map, setRoadObj, setRoadview }) => {
           .getProjection()
           .viewpointFromCoords(marker.getPosition(), marker.getAltitude());
         roadmap.setViewpoint(viewpoint);
-      }, 850);
+      }, 300);
     }
   }, [marker]);
 
